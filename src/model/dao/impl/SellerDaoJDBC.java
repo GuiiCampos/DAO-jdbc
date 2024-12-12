@@ -10,7 +10,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SellerDaoJDBC implements SellerDao {
 
@@ -70,6 +73,44 @@ public class SellerDaoJDBC implements SellerDao {
         return List.of();
     }
 
+    @Override
+    public List<Seller> findByDepartment(Department department) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.prepareStatement(
+                    "SELECT seller.*,department.Name as DepName " +
+                            "FROM seller INNER JOIN department " +
+                            "ON seller.DepartmentId = department.Id " +
+                            "WHERE DepartmentId = ? " +
+                            "ORDER BY Name "
+            );
+            ps.setInt(1, department.getId());
+            rs = ps.executeQuery();
+
+            List<Seller> sellers = new ArrayList<>();
+            Map<Integer, Department> map = new HashMap<>();
+
+            while (rs.next()) {
+
+                Department dp = map.get(rs.getInt("DepartmentId"));
+                if (dp == null) {
+                    dp = instantiateDepartment(rs);
+                    map.put(rs.getInt("DepartmentId"), dp);
+                }
+                Seller sel = instantiateSeller(rs, dp);
+                sellers.add(sel);
+            }
+            return sellers;
+
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(ps);
+            DB.closeResultSet(rs);
+        }
+    }
+
     private Seller instantiateSeller(ResultSet rs, Department dep) throws SQLException {
         Seller sel = new Seller();
         sel.setId(rs.getInt("Id"));
@@ -80,7 +121,6 @@ public class SellerDaoJDBC implements SellerDao {
         sel.setDepartment(dep);
         return sel;
     }
-
     private Department instantiateDepartment(ResultSet rs) throws SQLException {
         Department dep = new Department();
         dep.setId(rs.getInt("DepartmentId"));
