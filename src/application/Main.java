@@ -1,3 +1,5 @@
+package application;
+
 import model.dao.DaoFactory;
 import model.dao.SellerDao;
 import model.entities.Department;
@@ -27,11 +29,11 @@ public class Main {
         allSellers.forEach(System.out::println);
 
 
-        System.out.println("\n======seller Insert========");
-        Department dp2 = new Department(3, null);
-        Seller newSeller = new Seller(null, "Greg", "greg@gmail.com", new Date(), 4000.0, dp2);
-        sellerDao.insert(newSeller);
-        System.out.println("New ID: " + newSeller.getId());
+//        System.out.println("\n======seller Insert========");
+//        Department dp2 = new Department(3, null);
+//        Seller newSeller = new Seller(null, "Greg", "greg@gmail.com", new Date(), 4000.0, dp2);
+//        sellerDao.insert(newSeller);
+//        System.out.println("New ID: " + newSeller.getId());
 
 
         System.out.println("\n======seller Update========");
@@ -39,11 +41,12 @@ public class Main {
         updSeller.setName("Carlos Silva");
         updSeller.setEmail("Carlos@gmail.com");
         sellerDao.update(updSeller);
+        System.out.println("Update completed");
 
 
         System.out.println("\n======seller Delete========");
         try { //Caso acesse um ID não existente
-            sellerDao.deleteById(11);
+            sellerDao.deleteById(15);
             System.out.println("Delete Completed");
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
