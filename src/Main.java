@@ -3,7 +3,6 @@ import model.dao.SellerDao;
 import model.entities.Department;
 import model.entities.Seller;
 
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -12,40 +11,43 @@ public class Main {
     public static void main(String[] args) {
         SellerDao sellerDao = DaoFactory.createSellerDao();
 
-//        System.out.println("======Test seller findById========");
-//        Seller sell = sellerDao.findById(7);
-//        System.out.println(sell);
-//
-//        System.out.println("\n======Test seller findByDepartmentId========");
-        Department dp = new Department(2, null);
-        List<Seller> sellers = sellerDao.findByDepartment(dp);
-//        sellers.forEach(System.out::println);
-//
-        System.out.println("\n======Test seller findAll========");
-        sellers = sellerDao.findAll();
-        sellers.forEach(System.out::println);
-//
-//        System.out.println("\n======Test seller Insert========");
-//        Seller newSeller = new Seller(null, "Greg", "greg@gmail.com", new Date(), 4000.0, dp);
-//        sellerDao.insert(newSeller);
-//        System.out.println("New ID: " + newSeller.getId());
-//
-//        System.out.println("\n======Test seller Update========");
-//        Seller updateSeller = new Seller(7, "Jorge", "jorge@gmail.com", new Date(), 3503.0, new Department(4, null));
-//        sellerDao.update(updateSeller);
+        System.out.println("======seller findById========");
+        Seller sell1 = sellerDao.findById(7);
+        System.out.println(sell1);
 
-        System.out.println("\n======Test seller Delete========");
-        //Caso acesse um ID não existente
-        try {
+
+        System.out.println("\n======seller findByDepartmentId========");
+        Department dp1 = new Department(2, null);
+        List<Seller> sellersByDep = sellerDao.findByDepartment(dp1);
+        sellersByDep.forEach(System.out::println);
+
+
+        System.out.println("\n======seller findAll========");
+        List<Seller> allSellers = sellerDao.findAll();
+        allSellers.forEach(System.out::println);
+
+
+        System.out.println("\n======seller Insert========");
+        Department dp2 = new Department(3, null);
+        Seller newSeller = new Seller(null, "Greg", "greg@gmail.com", new Date(), 4000.0, dp2);
+        sellerDao.insert(newSeller);
+        System.out.println("New ID: " + newSeller.getId());
+
+
+        System.out.println("\n======seller Update========");
+        Seller updSeller = sellerDao.findById(8);
+        updSeller.setName("Carlos Silva");
+        updSeller.setEmail("Carlos@gmail.com");
+        sellerDao.update(updSeller);
+
+
+        System.out.println("\n======seller Delete========");
+        try { //Caso acesse um ID não existente
             sellerDao.deleteById(11);
             System.out.println("Delete Completed");
-        }catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             System.out.println(e.getMessage());
         }
-
-        System.out.println("\n======Test seller findAll========");
-        sellers = sellerDao.findAll();
-        sellers.forEach(System.out::println);
 
     }
 }
