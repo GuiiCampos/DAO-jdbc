@@ -5,7 +5,6 @@ import db.DbException;
 import db.DbIntergrityException;
 import model.dao.DepartmentDao;
 import model.entities.Department;
-import model.entities.Seller;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -102,6 +101,28 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 
     @Override
     public List<Department> findAll() {
-        return List.of();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = con.prepareStatement(
+                    "SELECT * FROM department ORDER BY Name"
+            );
+            rs = ps.executeQuery();
+            List<Department> departs = new ArrayList<>();
+
+            while (rs.next()) {
+                Department dep = new Department();
+                dep.setId(rs.getInt(1));
+                dep.setName(rs.getString(2));
+                departs.add(dep);
+            }
+            return departs;
+
+        }catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        }finally {
+            DB.closeStatement(ps);
+            DB.closeResultSet(rs);
+        }
     }
 }

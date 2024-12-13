@@ -26,5 +26,10 @@ public class Main2 {
         System.out.println("\n======Department FindById======");
         Department dp2 = dpDao.selectById(3);
         System.out.println(dp2);
+
+
+        System.out.println("\n======Department FindAll======");
+        List<Department> departments = dpDao.findAll();
+        departments.forEach(System.out::println);
     }
 }
