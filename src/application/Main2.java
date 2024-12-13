@@ -31,5 +31,10 @@ public class Main2 {
         System.out.println("\n======Department FindAll======");
         List<Department> departments = dpDao.findAll();
         departments.forEach(System.out::println);
+
+
+        System.out.println("\n======Department Delete======");
+        dpDao.deleteById(10);
+        System.out.println("Delete Successfully");
     }
 }
