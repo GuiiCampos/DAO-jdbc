@@ -2,10 +2,13 @@ package model.dao.impl;
 
 import db.DB;
 import db.DbException;
+import db.DbIntergrityException;
 import model.dao.DepartmentDao;
 import model.entities.Department;
+import model.entities.Seller;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DepartmentDaoJDBC implements DepartmentDao {
@@ -47,7 +50,23 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 
     @Override
     public void update(Department obs) {
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement(
+                    "UPDATE department " +
+                            "SET Name = ? " +
+                            "WHERE Id = ?"
+            );
+            ps.setString(1, obs.getName());
+            ps.setInt(2, obs.getId());
 
+            ps.executeUpdate();
+
+        }catch (SQLException e){
+            throw new DbException(e.getMessage());
+        }finally {
+            DB.closeStatement(ps);
+        }
     }
 
     @Override
