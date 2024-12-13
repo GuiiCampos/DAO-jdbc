@@ -22,5 +22,9 @@ public class Main2 {
         dpDao.update(dp3);
         System.out.println("Update Successfully");
 
+
+        System.out.println("\n======Department FindById======");
+        Department dp2 = dpDao.selectById(3);
+        System.out.println(dp2);
     }
 }
