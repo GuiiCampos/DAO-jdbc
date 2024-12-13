@@ -35,7 +35,6 @@ public class SellerDaoJDBC implements SellerDao {
 
     @Override
     public void deleteById(Integer id) {
-
     }
 
     @Override
@@ -70,7 +69,38 @@ public class SellerDaoJDBC implements SellerDao {
 
     @Override
     public List<Seller> findAll() {
-        return List.of();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.prepareStatement(
+                    "SELECT seller.*,department.Name as DepName " +
+                            "FROM seller INNER JOIN department " +
+                            "ON seller.DepartmentId = department.Id " +
+                            "ORDER BY Name "
+            );
+            rs = ps.executeQuery();
+
+            List<Seller> allSellers = new ArrayList<>();
+            Map<Integer, Department> map = new HashMap<>();
+
+            while (rs.next()) {
+
+                Department dp = map.get(rs.getInt("DepartmentId"));
+                if (dp == null) {
+                    dp = instantiateDepartment(rs);
+                    map.put(rs.getInt("DepartmentId"), dp);
+                }
+                Seller sel = instantiateSeller(rs, dp);
+                allSellers.add(sel);
+            }
+            return allSellers;
+
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(ps);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
