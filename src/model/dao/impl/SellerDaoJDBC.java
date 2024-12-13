@@ -20,6 +20,7 @@ public class SellerDaoJDBC implements SellerDao {
         this.conn = conn;
     }
 
+    //Inserir
     @Override
     public void insert(Seller obj) {
         PreparedStatement ps = null;
@@ -57,15 +58,41 @@ public class SellerDaoJDBC implements SellerDao {
         }
     }
 
+    //Atualizar
     @Override
-    public void update(Seller obs) {
+    public void update(Seller obj) {
+        PreparedStatement ps = null;
+        try {
+            ps = conn.prepareStatement(
+                            "UPDATE seller " +
+                                "SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? " +
+                                "WHERE Id = ?"
+            );
+            ps.setString(1, obj.getName());
+            ps.setString(2, obj.getEmail());
+            ps.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
+            ps.setDouble(4, obj.getBaseSalary());
+            ps.setInt(5, obj.getDepartment().getId());
+            ps.setInt(6, obj.getId());
 
+            int rowsAffected= ps.executeUpdate();
+            if (rowsAffected == 0){
+                throw new DbException("Error, no rows affected");
+            }
+
+        }catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        }finally {
+            DB.closeStatement(ps);
+        }
     }
 
+    //Deletar
     @Override
     public void deleteById(Integer id) {
     }
 
+    //Encontrar por ID
     @Override
     public Seller findById(Integer id) {
         PreparedStatement ps = null;
@@ -96,6 +123,7 @@ public class SellerDaoJDBC implements SellerDao {
         }
     }
 
+    //Retornar Tudo
     @Override
     public List<Seller> findAll() {
         PreparedStatement ps = null;
@@ -132,6 +160,7 @@ public class SellerDaoJDBC implements SellerDao {
         }
     }
 
+    //Encontrar por Departamento
     @Override
     public List<Seller> findByDepartment(Department department) {
         PreparedStatement ps = null;

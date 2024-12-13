@@ -12,7 +12,7 @@ public class Main {
         SellerDao sellerDao = DaoFactory.createSellerDao();
 
         System.out.println("======Test seller findById========");
-        Seller sell = sellerDao.findById(3);
+        Seller sell = sellerDao.findById(7);
         System.out.println(sell);
 
         System.out.println("\n======Test seller findByDepartmentId========");
@@ -28,5 +28,9 @@ public class Main {
         Seller newSeller = new Seller(null, "Greg", "greg@gmail.com", new Date(), 4000.0, dp);
         sellerDao.insert(newSeller);
         System.out.println("New ID: " + newSeller.getId());
+
+        System.out.println("\n======Test seller Update========");
+        Seller updateSeller = new Seller(7, "Jorge", "jorge@gmail.com", new Date(), 3503.0, new Department(4, null));
+        sellerDao.update(updateSeller);
     }
 }
